@@ -1,0 +1,12 @@
+{
+    "name": "asylum-seeker-log-app",
+    "version": "1.0.0",
+    "scripts": {
+      "start": "node server/index.js",
+      "heroku-postbuild": "npm install --prefix client && npm run build --prefix client"
+    },
+    "dependencies": {
+      "express": "^4.21.0"
+    }
+  }
+  
