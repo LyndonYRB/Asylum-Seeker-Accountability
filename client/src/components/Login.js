@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
 import { loginUser } from '../services/apiService';
+import { useNavigate } from 'react-router-dom';
 
 const Login = ({ setToken }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
+    
+    const navigate = useNavigate();
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const data = await loginUser(username, password);
-            setToken(data.token);
-            localStorage.setItem('token', data.token);
-        } catch (err) {
-            setError(err.message);
+            const response = await loginUser(username, password);
+    
+            if (response.token) {
+                setToken(response.token); // Store the token
+                navigate('/select-hotel'); // Redirect the user to the hotel selection page
+            } else {
+                setError('Invalid username or password'); // Display an error message
+            }
+        } catch (error) {
+            setError(error.message); // Display the error message from the API
         }
     };
+    
+    
 
     return (
         <div>
