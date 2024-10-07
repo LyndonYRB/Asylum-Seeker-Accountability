@@ -12,6 +12,12 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "script-src 'self' https://asylum-seeker-log-backend-af4533a27029.herokuapp.com");
+    next();
+});
+
+
 // CORS configuration to allow both local and Heroku frontend URLs
 const allowedOrigins = ['http://localhost:3000', 'https://asylum-seeker-log-frontend-af4533a27029.herokuapp.com'];
 
