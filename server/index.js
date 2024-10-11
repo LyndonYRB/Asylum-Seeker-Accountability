@@ -32,12 +32,13 @@ if (process.env.NODE_ENV === 'production') {
 // CORS configuration to allow both local and Heroku frontend URLs
 const allowedOrigins = [
     'http://localhost:3000', 
-    'https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com'
+    'https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com',
+    'https://asylum-seeker-log-backend-af4533a27029.herokuapp.com'
 ];
 
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or Postman)
+        // Allow requests with no origin (like mobile apps or Postman) or from allowed origins
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -46,7 +47,6 @@ app.use(cors({
         }
     }
 }));
-
 
 // Content Security Policy setup
 app.use((req, res, next) => {
