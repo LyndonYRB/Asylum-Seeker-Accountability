@@ -13,6 +13,9 @@ const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
+// Middleware for parsing JSON data
+app.use(express.json());
+
 // Content Security Policy setup
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' https://asylum-seeker-log-backend-af4533a27029.herokuapp.com");
@@ -32,10 +35,15 @@ app.use(cors({
     }
 }));
 
-// Middleware for parsing JSON data
-app.use(express.json());
+// Logging incoming requests for troubleshooting
 app.use((req, res, next) => {
     console.log(`Incoming Request: ${req.method} ${req.url}`);
+    next();
+});
+
+// Specific logging for /api/hotels route
+app.use('/api/hotels', (req, res, next) => {
+    console.log(`Request to /api/hotels: ${req.method} ${req.url}`);
     next();
 });
 
@@ -69,10 +77,4 @@ app.get('/debug', (req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-});
-
-// Logging incoming requests to specific API routes for troubleshooting
-app.use('/api/hotels', (req, res, next) => {
-    console.log(`Request to /api/hotels: ${req.method} ${req.url}`);
-    next();
 });
