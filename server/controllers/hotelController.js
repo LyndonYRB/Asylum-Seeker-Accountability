@@ -1,4 +1,6 @@
 const Hotel = require('../models/hotel');
+const hotelSchema = require('../validators/hotelValidation');
+
 
 // Get all hotels
 exports.getAllHotels = async (req, res) => {
@@ -15,14 +17,23 @@ exports.getAllHotels = async (req, res) => {
 // Create a new hotel
 exports.createHotel = async (req, res) => {
     const { name, address, rooms } = req.body;
+
+    // Validate the incoming data
+    const { error } = hotelSchema.validate({ name, address, rooms });
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
     try {
         const newHotel = new Hotel({ name, address, rooms });
         await newHotel.save();
         res.status(201).json(newHotel);
     } catch (error) {
+        console.error('Error creating hotel:', error);
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // Get a specific hotel by ID
 exports.getHotelById = async (req, res) => {
