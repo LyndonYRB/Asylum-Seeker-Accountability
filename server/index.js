@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path'); // Required to serve static files
+const path = require('path');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -23,7 +23,6 @@ app.use((req, res, next) => {
 const allowedOrigins = ['http://localhost:3000', 'https://asylum-seeker-log-frontend-af4533a27029.herokuapp.com'];
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin, like mobile apps or curl requests
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) === -1) {
             const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
@@ -63,6 +62,7 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
+// Debug route
 app.get('/debug', (req, res) => {
     res.status(200).json({ message: 'Debug route is working!' });
 });
