@@ -10,7 +10,7 @@ const HotelSelection = () => {
   useEffect(() => {
     // Fetch list of hotels from the backend
     axios
-      .get(`${process.env.REACT_APP_API_URL}api/hotels`)
+      .get(`${process.env.REACT_APP_API_URL}/api/hotels`)
       .then((response) => {
         console.log('Fetched hotels response:', response); // Log the entire response
         setHotels(response.data);

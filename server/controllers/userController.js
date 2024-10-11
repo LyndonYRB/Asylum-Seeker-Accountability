@@ -9,6 +9,7 @@ exports.createUser = async (req, res) => {
         await newUser.save();
         res.status(201).json(newUser);
     } catch (error) {
+        console.error('Error creating user:', error); // Improved error logging
         res.status(400).json({ message: error.message });
     }
 };
@@ -30,8 +31,8 @@ exports.login = async (req, res) => {
         console.log(`Comparing passwords: user-provided password "${password}" vs. hashed password in DB`);
         console.log('Password comparison result:', isMatch); // Debugging log
         console.log(`Password provided by user: ${password}`);
-console.log(`Hashed password in the database: ${user.password}`);
-console.log(`Password match result: ${isMatch}`); // Debugging log
+        console.log(`Hashed password in the database: ${user.password}`);
+        console.log(`Password match result: ${isMatch}`); // Debugging log
 
         if (!isMatch) {
             console.log('Password does not match'); // Debugging log
@@ -39,12 +40,21 @@ console.log(`Password match result: ${isMatch}`); // Debugging log
         }
 
         // Generate JWT token
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        if (!process.env.JWT_SECRET) {
+            throw new Error('JWT_SECRET is not defined. Please set it in the environment variables.');
+        }
+
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
         console.log('Login successful, token generated'); // Debugging log
         res.json({ message: 'Login successful', token });
     } catch (error) {
-        console.error('Error during login:', error); // Debugging log
-        res.status(500).json({ message: error.message });
+        console.error('Error during login:', error); // Improved error logging
+        res.status(500).json({ message: 'Server error during login' });
     }
 };
 
@@ -54,7 +64,8 @@ exports.getAllUsers = async (req, res) => {
         const users = await User.find();
         res.json(users);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching all users:', error); // Improved error logging
+        res.status(500).json({ message: 'Server error while fetching users' });
     }
 };
 
@@ -65,7 +76,8 @@ exports.getUserById = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error fetching user by ID:', error); // Improved error logging
+        res.status(500).json({ message: 'Server error while fetching user' });
     }
 };
 
@@ -76,7 +88,8 @@ exports.updateUser = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        console.error('Error updating user:', error); // Improved error logging
+        res.status(400).json({ message: 'Error updating user' });
     }
 };
 
@@ -87,6 +100,7 @@ exports.deleteUser = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
         res.json({ message: 'User deleted' });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Error deleting user:', error); // Improved error logging
+        res.status(500).json({ message: 'Server error while deleting user' });
     }
 };
