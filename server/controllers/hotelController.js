@@ -1,12 +1,11 @@
 const Hotel = require('../models/hotel');
 const hotelSchema = require('../validators/hotelValidation');
 
-
 // Get all hotels
 exports.getAllHotels = async (req, res) => {
     try {
         const hotels = await Hotel.find();
-        console.log('Feteched hotels:', hotels);
+        console.log('Fetched hotels:', hotels);
         res.json(hotels);
     } catch (error) {
         console.error('Error fetching hotels:', error);
@@ -16,16 +15,15 @@ exports.getAllHotels = async (req, res) => {
 
 // Create a new hotel
 exports.createHotel = async (req, res) => {
-    const { name, address, rooms } = req.body;
+    const { name, floors } = req.body;
 
-    // Validate the incoming data
-    const { error } = hotelSchema.validate({ name, address, rooms });
-    if (error) {
-        return res.status(400).json({ message: error.details[0].message });
+    // Validate the incoming data structure
+    if (!name || !Array.isArray(floors)) {
+        return res.status(400).json({ message: 'Invalid data structure. Please provide a valid hotel name and floors.' });
     }
 
     try {
-        const newHotel = new Hotel({ name, address, rooms });
+        const newHotel = new Hotel({ name, floors });
         await newHotel.save();
         res.status(201).json(newHotel);
     } catch (error) {
@@ -33,7 +31,6 @@ exports.createHotel = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
 
 // Get a specific hotel by ID
 exports.getHotelById = async (req, res) => {
@@ -48,10 +45,10 @@ exports.getHotelById = async (req, res) => {
 
 // Update a hotel
 exports.updateHotel = async (req, res) => {
-    const { name, address, rooms } = req.body;
-    const { error } = hotelSchema.validate({ name, address, rooms }); // Validate input
-    if (error) {
-        return res.status(400).json({ message: error.details[0].message });
+    const { name, floors } = req.body;
+
+    if (!name || !Array.isArray(floors)) {
+        return res.status(400).json({ message: 'Invalid data structure. Please provide a valid hotel name and floors.' });
     }
 
     try {
@@ -62,7 +59,6 @@ exports.updateHotel = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
-
 
 // Delete a hotel
 exports.deleteHotel = async (req, res) => {
