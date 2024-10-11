@@ -48,6 +48,12 @@ exports.getHotelById = async (req, res) => {
 
 // Update a hotel
 exports.updateHotel = async (req, res) => {
+    const { name, address, rooms } = req.body;
+    const { error } = hotelSchema.validate({ name, address, rooms }); // Validate input
+    if (error) {
+        return res.status(400).json({ message: error.details[0].message });
+    }
+
     try {
         const hotel = await Hotel.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!hotel) return res.status(404).json({ message: 'Hotel not found' });
@@ -56,6 +62,7 @@ exports.updateHotel = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
 
 // Delete a hotel
 exports.deleteHotel = async (req, res) => {
