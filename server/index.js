@@ -19,18 +19,34 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 
+// Force HTTPS in production
+if (process.env.NODE_ENV === 'production') {
+    app.use((req, res, next) => {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect(`https://${req.hostname}${req.url}`);
+        }
+        next();
+    });
+}
+
 // CORS configuration to allow both local and Heroku frontend URLs
-const allowedOrigins = ['http://localhost:3000', 'https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com'];
+const allowedOrigins = [
+    'http://localhost:3000', 
+    'https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com'
+];
+
 app.use(cors({
     origin: function (origin, callback) {
-        if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) === -1) {
-            const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-            return callback(new Error(msg), false);
+        // Allow requests with no origin (like mobile apps or Postman)
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            console.error(`Blocked by CORS: ${origin}`);
+            callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'));
         }
-        return callback(null, true);
     }
 }));
+
 
 // Content Security Policy setup
 app.use((req, res, next) => {
