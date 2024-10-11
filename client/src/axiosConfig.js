@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:5000/api', // Update this with your server's URL when deployed
+    baseURL: 'https://asylum-seeker-log-backend-af4533a27029.herokuapp.com/api',
 });
 
 export default api;
