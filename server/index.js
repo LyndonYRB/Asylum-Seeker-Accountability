@@ -19,15 +19,8 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 
-
-// Content Security Policy setup
-app.use((req, res, next) => {
-    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' https://asylum-seeker-log-backend-af4533a27029.herokuapp.com");
-    next();
-});
-
 // CORS configuration to allow both local and Heroku frontend URLs
-const allowedOrigins = ['http://localhost:3000', 'https://asylum-seeker-log-frontend-af4533a27029.herokuapp.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin) return callback(null, true);
@@ -38,6 +31,12 @@ app.use(cors({
         return callback(null, true);
     }
 }));
+
+// Content Security Policy setup
+app.use((req, res, next) => {
+    res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self' https://asylum-seeker-log-backend-af4533a27029.herokuapp.com");
+    next();
+});
 
 // Logging incoming requests for troubleshooting
 app.use((req, res, next) => {
