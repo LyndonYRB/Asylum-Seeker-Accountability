@@ -37,15 +37,9 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or Postman) or from allowed origins
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            console.error(`Blocked by CORS: ${origin}`);
-            callback(new Error('The CORS policy for this site does not allow access from the specified Origin.'));
-        }
-    }
+    origin: '*', // Allow all origins temporarily
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow common HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
 }));
 
 // Content Security Policy setup
