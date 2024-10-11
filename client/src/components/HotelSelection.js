@@ -12,6 +12,7 @@ const HotelSelection = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}api/hotels`)
       .then((response) => {
+        console.log('Fetched hotels response:', response); // Log the entire response
         setHotels(response.data);
       })
       .catch((error) => {
@@ -25,6 +26,7 @@ const HotelSelection = () => {
       navigate(`/hotel/${selectedHotel}`);
     }
   };
+
 
   return (
     <div>

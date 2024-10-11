@@ -4,8 +4,10 @@ const Hotel = require('../models/hotel');
 exports.getAllHotels = async (req, res) => {
     try {
         const hotels = await Hotel.find();
+        console.log('Feteched hotels:', hotels);
         res.json(hotels);
     } catch (error) {
+        console.error('Error fetching hotels:', error);
         res.status(500).json({ message: error.message });
     }
 };
