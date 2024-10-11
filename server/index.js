@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
+const helmet = require('helmet');
+
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -15,6 +17,8 @@ const app = express();
 
 // Middleware for parsing JSON data
 app.use(express.json());
+app.use(helmet());
+
 
 // Content Security Policy setup
 app.use((req, res, next) => {
