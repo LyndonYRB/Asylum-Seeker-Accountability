@@ -1,27 +1,67 @@
+// models/hotel.js
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-// Define room schema
-const roomSchema = new Schema({
-    roomNumber: { type: Number, required: true }
-});
+// Define asylum seeker schema
+const asylumSeekerSchema = new Schema({
+    name: { type: String, required: true },
+    status: { type: Boolean, default: false } // false = Checked Out, true = Checked In
+}, { timestamps: true });
 
-// Define floor schema
+const AsylumSeeker = mongoose.models.AsylumSeeker || mongoose.model('AsylumSeeker', asylumSeekerSchema);
+
+// Define the room schema
+const roomSchema = new Schema({
+    roomNumber: { type: Number, required: true },
+    asylumSeekers: [
+        {
+            type: Schema.Types.ObjectId, // Reference to AsylumSeeker
+            ref: 'AsylumSeeker'
+        }
+    ],
+    hotelId: { // Reference to the Hotel
+        type: Schema.Types.ObjectId,
+        ref: 'Hotel',
+        required: true
+    }
+}, { timestamps: true });
+
+const Room = mongoose.models.Room || mongoose.model('Room', roomSchema);
+
+// Define the floor schema
 const floorSchema = new Schema({
     floorNumber: { type: Number, required: true },
-    rooms: [roomSchema]
+    rooms: [
+        {
+            type: Schema.Types.ObjectId, // Reference to Room
+            ref: 'Room'
+        }
+    ]
 });
+
+const Floor = mongoose.models.Floor || mongoose.model('Floor', floorSchema);
 
 // Define the hotel schema
 const hotelSchema = new Schema({
-    name: {
+    id: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
-    floors: [floorSchema] // Embed floors with rooms in the hotel schema
+    name: { type: String, required: true },
+    floors: [
+        {
+            type: Schema.Types.ObjectId, // Reference to Floor
+            ref: 'Floor'
+        }
+    ]
 }, { timestamps: true });
 
-// Create the hotel model
-const Hotel = mongoose.model('Hotel', hotelSchema);
+const Hotel = mongoose.models.Hotel || mongoose.model('Hotel', hotelSchema);
 
-module.exports = Hotel;
+module.exports = {
+    AsylumSeeker,
+    Room,
+    Floor,
+    Hotel
+};

@@ -1,7 +1,12 @@
+//modol/asylumSeeker.js
 const mongoose = require('mongoose');
+
+delete mongoose.models.AsylumSeeker;
+
+
+
 const { Schema } = mongoose;
 
-// Define the asylum seeker schema
 const asylumSeekerSchema = new Schema({
     fullName: {
         type: String,
@@ -11,7 +16,7 @@ const asylumSeekerSchema = new Schema({
         type: Number,
         required: true
     },
-    room: {
+    room: {  // Reference to Room model
         type: Schema.Types.ObjectId,
         ref: 'Room',
         required: true
@@ -22,7 +27,6 @@ const asylumSeekerSchema = new Schema({
     }
 }, { timestamps: true });
 
-// Create the asylum seeker model
-const AsylumSeeker = mongoose.model('AsylumSeeker', asylumSeekerSchema);
+const AsylumSeeker = mongoose.models.AsylumSeeker || mongoose.model('AsylumSeeker', asylumSeekerSchema);
 
 module.exports = AsylumSeeker;

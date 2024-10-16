@@ -9,11 +9,18 @@ const HotelSelection = () => {
 
   useEffect(() => {
     // Fetch list of hotels from the backend
+    console.log('Using API URL:', process.env.REACT_APP_API_URL);
     axios
-      .get(`${process.env.REACT_APP_API_URL}/api/hotels`)
+      .get(`${process.env.REACT_APP_API_URL}api/hotels`)
       .then((response) => {
         console.log('Fetched hotels response:', response); // Log the entire response
-        setHotels(response.data);
+        if (response.data && Array.isArray(response.data)) {
+          setHotels(response.data); // Adjusting to handle if the response is a direct array
+        } else if (response.data && response.data.hotels) {
+          setHotels(response.data.hotels); // Adjusting to handle if hotels are nested in a property
+        } else {
+          console.error('Unexpected response format:', response.data);
+        }
       })
       .catch((error) => {
         console.error('Error fetching hotels:', error);
@@ -27,7 +34,6 @@ const HotelSelection = () => {
     }
   };
 
-
   return (
     <div>
       <h2>Select Your Hotel</h2>
@@ -36,7 +42,7 @@ const HotelSelection = () => {
         onChange={(e) => setSelectedHotel(e.target.value)}
       >
         <option value="">-- Select a Hotel --</option>
-        {hotels.map((hotel) => (
+        {Array.isArray(hotels) && hotels.map((hotel) => (
           <option key={hotel._id} value={hotel._id}>
             {hotel.name}
           </option>

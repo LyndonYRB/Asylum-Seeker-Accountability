@@ -5,11 +5,22 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 const FloorSelection = () => {
   const [floors, setFloors] = useState([]);
+  const [hotelName, setHotelName] = useState(''); // State to store the hotel name
   const { hotelId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch the list of floors for the selected hotel from the backend
+    // Fetch the hotel details to get the hotel name
+    axios
+      .get(`${process.env.REACT_APP_API_URL}api/hotels/${hotelId}`)
+      .then((response) => {
+        setHotelName(response.data.name); // Set the hotel name in the state
+      })
+      .catch((error) => {
+        console.error('Error fetching hotel details:', error);
+      });
+
+    // Fetch the list of floors for the selected hotel
     axios
       .get(`${process.env.REACT_APP_API_URL}api/hotels/${hotelId}/floors`)
       .then((response) => {
@@ -21,21 +32,25 @@ const FloorSelection = () => {
   }, [hotelId]);
 
   const handleFloorSelection = (floorNumber) => {
-    // Navigate to the next screen with the selected floor number
     navigate(`/hotel/${hotelId}/floor/${floorNumber}`);
   };
 
   return (
     <div>
       <h2>Select a Floor</h2>
+      <h3>Hotel: {hotelName}</h3> {/* Display the hotel name */}
       <ul>
-        {floors.map((floor) => (
-          <li key={floor.number}>
-            <button onClick={() => handleFloorSelection(floor.number)}>
-              Floor {floor.number}
-            </button>
-          </li>
-        ))}
+        {Array.isArray(floors) ? (
+          floors.map((floor) => (
+            <li key={floor.number}>
+              <button onClick={() => handleFloorSelection(floor.number)}>
+                Floor {floor.number}
+              </button>
+            </li>
+          ))
+        ) : (
+          <p>No floors available for this hotel.</p>
+        )}
       </ul>
     </div>
   );

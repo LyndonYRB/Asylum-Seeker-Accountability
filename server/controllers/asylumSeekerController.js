@@ -1,3 +1,4 @@
+//controllers/asylumSeekerController.js
 const AsylumSeeker = require('../models/asylumSeeker');
 
 // Create a new asylum seeker
@@ -15,12 +16,14 @@ exports.createAsylumSeeker = async (req, res) => {
 // Get all asylum seekers
 exports.getAllAsylumSeekers = async (req, res) => {
     try {
-        const asylumSeekers = await AsylumSeeker.find().populate('room');
+        const asylumSeekers = await AsylumSeeker.find().populate({ path: 'room', strictPopulate: false }); // Disable strictPopulate
         res.json(asylumSeekers);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
+
+
 
 // Get a specific asylum seeker by ID
 exports.getAsylumSeekerById = async (req, res) => {

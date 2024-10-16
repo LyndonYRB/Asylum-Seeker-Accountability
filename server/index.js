@@ -1,3 +1,4 @@
+// server/index.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
@@ -37,9 +38,9 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-    origin: '*', // Allow all origins temporarily
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allow common HTTP methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allow these headers
+    origin: ['https://asylum-seeker-log-frontend-6c149a585f62.herokuapp.com', 'http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Content Security Policy setup

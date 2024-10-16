@@ -1,3 +1,4 @@
+// server/routes/hotelRoutes.js
 const express = require('express');
 const router = express.Router();
 const hotelController = require('../controllers/hotelController');
@@ -16,5 +17,11 @@ router.put('/:id', hotelController.updateHotel);
 
 // Delete a hotel
 router.delete('/:id', hotelController.deleteHotel);
+
+// Get floors for a specific hotel
+router.get('/:hotelId/floors', hotelController.getFloors);
+
+// Get rooms for a specific floor in a hotel
+router.get('/:hotelId/floors/:floorNumber/rooms', hotelController.getRoomsForFloor);
 
 module.exports = router;
